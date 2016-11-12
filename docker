@@ -34,7 +34,7 @@ nginx例子：
 dockerfile：
 FROM nginx:1.10
 COPY static-html-directory /usr/share/nginx/html
-
+docker build --force-rm=true -t nginx:wfw .
 docker run --name docker-nginx -d -p 8090:80  nginx:v1
 http://10.1.130.134:8090/
 
