@@ -1,0 +1,43 @@
+dockerfile编写：
+1、使用标签便于理解，比如dev，stage，版本跟踪v1234等
+2、选择基础镜像，镜像大小会影响你的迁移等
+busybox《debian《centos《ubuntu
+3、充分利用缓存，将相同的部分放到前边，不同的部分放到后边。
+4、run指令不要在单独一行使用apt-get update之后再进行apt-get instatopll software 应该放到一行去避免缓存带来的安装失败
+5、不要再dockerfile中expose进行端口映射，避免冲突
+6、尽量用entrypoint进行程序启动并且是exec格式，因为shell格式启动时默认是sh子进程导致子进程不是1不能进行docker stop
+
+    docker rmi $(docker images -q -f dangling=true)
+    docker volume rm $(docker volume ls -q -f dangling=true)
+
+mysql例子：
+docker pull mysql:5.6.32
+docker run -d --name docker-mysql -p 3310:3306 -e MYSQL_ROOT_PASSWORD=wfw123wfw  mysql:5.6.32
+
+
+--测试
+有mysql客户端
+mysql -h 127.0.0.1 -P 3310 -uroot -p
+没有的执行
+docker exec -it docker-mysql bash
+mysql  -uroot -p
+
+tomcat例子：
+docker pull tomcat:7-jre8
+mkdir -p /myData/webapp
+chmod -R 777  /myData
+docker run -d --name tomcatweb -p 8081:8080 -v /myData/webapp:/usr/local/tomcat/webapps tomcat:7-jre8
+测试：
+http://10.1.130.134:8081/test
+
+nginx例子：
+dockerfile：
+FROM nginx:1.10
+COPY static-html-directory /usr/share/nginx/html
+
+docker run --name docker-nginx -d -p 8090:80  nginx:v1
+http://10.1.130.134:8090/
+
+
+tomcat:7-jre8  nginx:1.10  mysql:5.6.32
+
